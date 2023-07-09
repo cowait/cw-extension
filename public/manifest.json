@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "Cw Extension",
+  "version": "0.1.0",
+  "description": "My Chrome Extension",
+  "action": {
+    "default_title": "My Extension",
+    "default_popup": "index.html"
+  },
+  "permissions": [
+    "storage",
+    "scripting",
+    "activeTab"
+  ]
+}
