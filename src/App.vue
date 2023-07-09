@@ -1,18 +1,38 @@
 <script setup>
-const clearImg = async () => {
-  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    chrome.scripting.executeScript({
-      target: { tabId: tabs[0].id },
-      function: () => {
-        const imgs = document.querySelectorAll('img')
-        if (imgs && imgs.length) {
-          imgs.forEach(ele => {
-            ele.remove()
-          })
-        }
+const getAtiveTab = () => {
+  return new Promise(resolve => {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      resolve(tabs[0])
+    }); 
+  })
+}
+const clearIframe = async () => {
+  const tab = await getAtiveTab()
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    function: () => {
+      const eles = document.querySelectorAll('iframe')
+      if (eles && eles.length) {
+        eles.forEach(ele => {
+          ele.remove()
+        })
       }
-    });
-  }); 
+    }
+  });
+}
+const clearImg = async () => {
+  const tab = await getAtiveTab()
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    function: () => {
+      const imgs = document.querySelectorAll('img')
+      if (imgs && imgs.length) {
+        imgs.forEach(ele => {
+          ele.remove()
+        })
+      }
+    }
+  });
 }
 </script>
 
@@ -22,6 +42,7 @@ const clearImg = async () => {
 
   <main>
     <el-button @click="clearImg">清楚图片</el-button>
+    <el-button @click="clearIframe">清除iframe</el-button>
   </main>
 </template>
 
