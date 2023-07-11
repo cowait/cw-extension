@@ -6,7 +6,36 @@ const getAtiveTab = () => {
     }); 
   })
 }
-const clearIframe = async () => {
+const hideImg = async () => {
+  const tab = await getAtiveTab()
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    function: () => {
+      const eles = document.querySelectorAll('img')
+      if (eles && eles.length) {
+        eles.forEach(ele => {
+          ele.originHidden = ele.originHidden !== undefined ? ele.originHidden : ele.hidden
+          ele.hidden = true
+        })
+      }
+    }
+  });
+}
+const restoreImgHidden = async () => {
+  const tab = await getAtiveTab()
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    function: () => {
+      const eles = document.querySelectorAll('img')
+      if (eles && eles.length) {
+        eles.forEach(ele => {
+          ele.hidden = ele.originHidden
+        })
+      }
+    }
+  });
+}
+const hideIframe = async () => {
   const tab = await getAtiveTab()
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
@@ -14,21 +43,22 @@ const clearIframe = async () => {
       const eles = document.querySelectorAll('iframe')
       if (eles && eles.length) {
         eles.forEach(ele => {
-          ele.remove()
+          ele.originHidden = ele.originHidden !== undefined ? ele.originHidden : ele.hidden
+          ele.hidden = true
         })
       }
     }
   });
 }
-const clearImg = async () => {
+const restoreIframeHidden = async () => {
   const tab = await getAtiveTab()
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
     function: () => {
-      const imgs = document.querySelectorAll('img')
-      if (imgs && imgs.length) {
-        imgs.forEach(ele => {
-          ele.remove()
+      const eles = document.querySelectorAll('iframe')
+      if (eles && eles.length) {
+        eles.forEach(ele => {
+          ele.hidden = false
         })
       }
     }
@@ -41,8 +71,10 @@ const clearImg = async () => {
   </header>
 
   <main>
-    <el-button @click="clearImg">清楚图片</el-button>
-    <el-button @click="clearIframe">清除iframe</el-button>
+    <el-button @click="hideImg">隐藏图片</el-button>
+    <el-button @click="restoreImgHidden">恢复图片</el-button>
+    <el-button @click="hideIframe">隐藏iframe</el-button>
+    <el-button @click="restoreIframeHidden">恢复iframe</el-button>
   </main>
 </template>
 
